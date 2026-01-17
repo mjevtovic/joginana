@@ -30,7 +30,7 @@ export function Header({ user }: HeaderProps) {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-40 glass border-b border-pink-100/50 pt-12 sm:pt-0">
+      <header className="fixed inset-x-0 top-0 z-40 glass border-b border-pink-100/50 pt-6 sm:pt-0">
         <nav className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8">
           <div className="flex lg:flex-1">
             <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-2 group">
