@@ -77,16 +77,16 @@ export function InstallPrompt() {
   if (showIOSPrompt) {
     return (
       <div className="fixed bottom-20 left-4 right-4 z-40 animate-in slide-in-from-bottom-4 duration-300">
-        <div className="relative rounded-2xl shadow-2xl p-4 bg-gradient-to-br from-primary-600 via-primary-700 to-pink-600 border border-primary-400">
+        <div className="relative rounded-2xl shadow-2xl p-4 bg-gray-800 border border-gray-700">
           <button
             onClick={handleDismiss}
-            className="absolute top-3 right-3 p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+            className="absolute top-3 right-3 p-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
           >
             <X className="w-4 h-4 text-white" />
           </button>
 
           <div className="flex items-start gap-3">
-            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
               <Download className="w-6 h-6 text-white" />
             </div>
 
@@ -94,17 +94,17 @@ export function InstallPrompt() {
               <h3 className="font-display font-bold text-white mb-1">
                 Add to Home Screen
               </h3>
-              <p className="text-sm text-white/80 mb-3">
+              <p className="text-sm text-gray-300 mb-3">
                 Install JoginAna for quick access and a better experience
               </p>
 
-              <div className="flex items-center gap-2 text-sm text-white bg-white/20 backdrop-blur rounded-xl p-3">
+              <div className="flex items-center gap-2 text-sm text-white bg-gray-700 rounded-xl p-3">
                 <span>Tap</span>
                 <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white">
                   <Share className="w-4 h-4 text-blue-500" />
                 </span>
                 <span>then</span>
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-white text-sage-800">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-white text-gray-800">
                   <Plus className="w-4 h-4" />
                   <span className="text-xs font-medium">Add to Home Screen</span>
                 </span>
@@ -119,16 +119,16 @@ export function InstallPrompt() {
   // Android/Chrome install button
   return (
     <div className="fixed bottom-20 left-4 right-4 z-40 animate-in slide-in-from-bottom-4 duration-300">
-      <div className="relative rounded-2xl shadow-2xl p-4 bg-gradient-to-br from-primary-600 via-primary-700 to-pink-600 border border-primary-400">
+      <div className="relative rounded-2xl shadow-2xl p-4 bg-gray-800 border border-gray-700">
         <button
           onClick={handleDismiss}
-          className="absolute top-3 right-3 p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+          className="absolute top-3 right-3 p-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
         >
           <X className="w-4 h-4 text-white" />
         </button>
 
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
             <Download className="w-6 h-6 text-white" />
           </div>
 
@@ -136,7 +136,7 @@ export function InstallPrompt() {
             <h3 className="font-display font-bold text-white mb-0.5">
               Install JoginAna
             </h3>
-            <p className="text-sm text-white/80">
+            <p className="text-sm text-gray-300">
               Add to home screen for quick access
             </p>
           </div>
@@ -144,7 +144,7 @@ export function InstallPrompt() {
           <Button
             onClick={handleInstall}
             size="sm"
-            className="bg-white text-primary-700 hover:bg-white/90 font-semibold rounded-xl px-4"
+            className="bg-white text-gray-800 hover:bg-gray-100 font-semibold rounded-xl px-4"
           >
             Install
           </Button>
