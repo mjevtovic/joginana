@@ -3,8 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, Clock, Lock, Play, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { formatDuration, capitalize } from "@/lib/utils";
+import { cn, formatDuration, capitalize, formatPrice } from "@/lib/utils";
 import type { YogaClass } from "@/types/database";
 import { LotusFlower } from "@/components/ui/decorations";
 
@@ -143,10 +142,20 @@ export function ClassCard({
                 {yogaClass.style}
               </span>
             )}
-            {yogaClass.is_premium && (
+            {yogaClass.access_type === "one_time" && yogaClass.one_time_price_cents && (
+              <span className="text-xs font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-primary-500 to-pink-500 text-white shadow-sm">
+                {formatPrice(yogaClass.one_time_price_cents, yogaClass.currency || "EUR")}
+              </span>
+            )}
+            {yogaClass.access_type === "subscriber" && (
               <span className="text-xs font-medium px-2 py-1 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 border border-amber-200 flex items-center gap-1">
                 <Sparkles className="w-3 h-3" />
                 Premium
+              </span>
+            )}
+            {yogaClass.access_type === "free" && (
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border border-green-200">
+                Free
               </span>
             )}
           </div>
