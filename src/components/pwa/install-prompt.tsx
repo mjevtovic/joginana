@@ -14,6 +14,7 @@ export function InstallPrompt() {
   const [showIOSPrompt, setShowIOSPrompt] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     // Check if already installed (standalone mode)
@@ -52,6 +53,22 @@ export function InstallPrompt() {
     };
   }, []);
 
+  // Lock body scroll when dialog is visible
+  useEffect(() => {
+    const shouldShow = !isStandalone && !dismissed && (deferredPrompt || showIOSPrompt);
+    setIsVisible(shouldShow);
+
+    if (shouldShow) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isStandalone, dismissed, deferredPrompt, showIOSPrompt]);
+
   const handleInstall = async () => {
     if (!deferredPrompt) return;
 
@@ -69,14 +86,14 @@ export function InstallPrompt() {
   };
 
   // Don't show if already installed, dismissed, or no prompt available
-  if (isStandalone || dismissed || (!deferredPrompt && !showIOSPrompt)) {
+  if (!isVisible) {
     return null;
   }
 
   // iOS Safari prompt with instructions
   if (showIOSPrompt) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
         <div className="relative rounded-2xl shadow-2xl p-4 bg-gray-800 border border-gray-700 max-w-sm w-full">
           <button
             onClick={handleDismiss}
@@ -118,7 +135,7 @@ export function InstallPrompt() {
 
   // Android/Chrome install button
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
       <div className="relative rounded-2xl shadow-2xl p-4 bg-gray-800 border border-gray-700 max-w-sm w-full">
         <button
           onClick={handleDismiss}
