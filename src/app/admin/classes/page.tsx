@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Plus, Edit, Eye, EyeOff, Clock } from "lucide-react";
+import { Plus, Edit, Eye, EyeOff, Clock, Star } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import type { YogaClass } from "@/types/database";
 
@@ -11,6 +11,21 @@ export default async function AdminClassesPage() {
     .from("classes")
     .select("*")
     .order("created_at", { ascending: false });
+
+  // Fetch ratings for all classes
+  const { data: ratingsData } = await supabase
+    .from("class_ratings")
+    .select("class_id, rating");
+
+  // Calculate average ratings per class
+  const ratingsMap = new Map<string, { total: number; count: number }>();
+  ratingsData?.forEach((r) => {
+    const current = ratingsMap.get(r.class_id) || { total: 0, count: 0 };
+    ratingsMap.set(r.class_id, {
+      total: current.total + r.rating,
+      count: current.count + 1,
+    });
+  });
 
   if (error) {
     return <div className="text-red-500">Error loading classes: {error.message}</div>;
@@ -54,6 +69,9 @@ export default async function AdminClassesPage() {
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Duration
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Rating
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
@@ -108,6 +126,22 @@ export default async function AdminClassesPage() {
                   </div>
                 </td>
                 <td className="px-6 py-4">
+                  {(() => {
+                    const ratingInfo = ratingsMap.get(yogaClass.id);
+                    if (!ratingInfo || ratingInfo.count === 0) {
+                      return <span className="text-sm text-gray-400">-</span>;
+                    }
+                    const avg = Math.round((ratingInfo.total / ratingInfo.count) * 10) / 10;
+                    return (
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                        <span className="text-sm font-medium text-gray-700">{avg}</span>
+                        <span className="text-xs text-gray-400">({ratingInfo.count})</span>
+                      </div>
+                    );
+                  })()}
+                </td>
+                <td className="px-6 py-4">
                   <span
                     className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${
                       yogaClass.published !== false
@@ -141,7 +175,7 @@ export default async function AdminClassesPage() {
             ))}
             {(!classes || classes.length === 0) && (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                   No classes yet. Create your first class to get started.
                 </td>
               </tr>

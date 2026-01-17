@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Upload, Loader2, X, Trash2 } from "lucide-react";
+import { ArrowLeft, Upload, Loader2, X, Trash2, Star, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import type { Difficulty, AccessType, YogaClass } from "@/types/database";
@@ -46,10 +46,18 @@ export default function EditClassPage({ params }: PageProps) {
     published: false,
   });
 
+  const [stats, setStats] = useState({
+    averageRating: 0,
+    totalRatings: 0,
+    totalComments: 0,
+  });
+
   useEffect(() => {
     const fetchClass = async () => {
       try {
         const supabase = createClient();
+
+        // Fetch class data
         const { data, error: fetchError } = await supabase
           .from("classes")
           .select("*")
@@ -75,6 +83,34 @@ export default function EditClassPage({ params }: PageProps) {
           equipment_tags: yogaClass.equipment_tags || [],
           published: yogaClass.published !== false,
         });
+
+        // Fetch ratings stats
+        const { data: ratingsData } = await supabase
+          .from("class_ratings")
+          .select("rating")
+          .eq("class_id", id);
+
+        if (ratingsData && ratingsData.length > 0) {
+          const avgRating = ratingsData.reduce((sum, r) => sum + r.rating, 0) / ratingsData.length;
+          setStats(prev => ({
+            ...prev,
+            averageRating: Math.round(avgRating * 10) / 10,
+            totalRatings: ratingsData.length,
+          }));
+        }
+
+        // Fetch comments count
+        const { count: commentsCount } = await supabase
+          .from("class_comments")
+          .select("id", { count: "exact", head: true })
+          .eq("class_id", id);
+
+        if (commentsCount !== null) {
+          setStats(prev => ({
+            ...prev,
+            totalComments: commentsCount,
+          }));
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load class");
       } finally {
@@ -298,6 +334,47 @@ export default function EditClassPage({ params }: PageProps) {
           {error}
         </div>
       )}
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 gap-4 mb-8">
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-yellow-100 rounded-lg">
+              <Star className="w-5 h-5 text-yellow-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Average Rating</p>
+              <p className="text-xl font-semibold text-gray-900">
+                {stats.averageRating > 0 ? (
+                  <>
+                    {stats.averageRating} <span className="text-sm font-normal text-gray-500">({stats.totalRatings} ratings)</span>
+                  </>
+                ) : (
+                  <span className="text-gray-400">No ratings yet</span>
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <MessageSquare className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Comments</p>
+              <p className="text-xl font-semibold text-gray-900">
+                {stats.totalComments > 0 ? (
+                  stats.totalComments
+                ) : (
+                  <span className="text-gray-400">No comments yet</span>
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Basic Info */}
