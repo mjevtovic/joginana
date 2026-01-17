@@ -3,12 +3,13 @@
 import { cn } from "@/lib/utils";
 
 // Lotus Flower SVG
-export function LotusFlower({ className }: { className?: string }) {
+export function LotusFlower({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
     <svg
       viewBox="0 0 100 100"
       className={cn("text-pink-300", className)}
       fill="currentColor"
+      style={style}
     >
       {/* Center petal */}
       <ellipse cx="50" cy="45" rx="8" ry="25" opacity="0.9" />
@@ -25,7 +26,7 @@ export function LotusFlower({ className }: { className?: string }) {
 }
 
 // Dream Catcher SVG
-export function DreamCatcher({ className }: { className?: string }) {
+export function DreamCatcher({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
     <svg
       viewBox="0 0 100 120"
@@ -33,6 +34,7 @@ export function DreamCatcher({ className }: { className?: string }) {
       fill="none"
       stroke="currentColor"
       strokeWidth="1"
+      style={style}
     >
       {/* Outer ring */}
       <circle cx="50" cy="40" r="35" opacity="0.6" />
