@@ -17,25 +17,14 @@ export function Header({ user }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // Detect if we're in the /app section (PWA routes)
-  const isInAppSection = pathname.startsWith("/app");
-
-  // Use /app routes when in the app section, otherwise use desktop routes
-  // For logged-in users, Home goes to /app (dashboard) not / (marketing)
+  // For logged-in users: Home goes to /app (dashboard), Classes goes to /classes (desktop view)
   const navigation = user
-    ? isInAppSection
-      ? [
-          { name: "Home", href: "/app" },
-          { name: "Classes", href: "/app/classes" },
-          { name: "Plan", href: "/app/plan" },
-          { name: "Profile", href: "/app/profile" },
-        ]
-      : [
-          { name: "Home", href: "/app" },
-          { name: "Classes", href: "/classes" },
-          { name: "Favorites", href: "/favorites" },
-          { name: "Planner", href: "/planner" },
-        ]
+    ? [
+        { name: "Home", href: "/app" },
+        { name: "Classes", href: "/classes" },
+        { name: "Favorites", href: "/favorites" },
+        { name: "Planner", href: "/planner" },
+      ]
     : [
         { name: "Features", href: "/#features" },
         { name: "Pricing", href: "/pricing" },
