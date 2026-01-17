@@ -66,7 +66,7 @@ export function DreamCatcher({ className, style }: { className?: string; style?:
 }
 
 // Mandala Pattern
-export function Mandala({ className }: { className?: string }) {
+export function Mandala({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
     <svg
       viewBox="0 0 100 100"
@@ -74,6 +74,7 @@ export function Mandala({ className }: { className?: string }) {
       fill="none"
       stroke="currentColor"
       strokeWidth="0.5"
+      style={style}
     >
       {/* Concentric circles */}
       <circle cx="50" cy="50" r="45" opacity="0.3" />
@@ -102,12 +103,13 @@ export function Mandala({ className }: { className?: string }) {
 }
 
 // Om Symbol
-export function OmSymbol({ className }: { className?: string }) {
+export function OmSymbol({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
     <svg
       viewBox="0 0 100 100"
       className={cn("text-primary-400", className)}
       fill="currentColor"
+      style={style}
     >
       <path
         d="M25 70 Q15 60 20 45 Q25 30 40 30 Q55 30 55 45 Q55 55 45 60 Q35 65 35 75 Q35 85 50 85 Q65 85 70 70 Q75 55 70 40 Q65 25 50 20 Q35 15 25 25 M75 25 Q85 25 85 35 Q85 45 75 45 M80 15 L80 20"
