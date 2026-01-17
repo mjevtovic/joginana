@@ -21,16 +21,17 @@ export function Header({ user }: HeaderProps) {
   const isInAppSection = pathname.startsWith("/app");
 
   // Use /app routes when in the app section, otherwise use desktop routes
+  // For logged-in users, Home goes to /app (dashboard) not / (marketing)
   const navigation = user
     ? isInAppSection
       ? [
-          { name: "Home", href: "/" },
+          { name: "Home", href: "/app" },
           { name: "Classes", href: "/app/classes" },
           { name: "Plan", href: "/app/plan" },
           { name: "Profile", href: "/app/profile" },
         ]
       : [
-          { name: "Home", href: "/" },
+          { name: "Home", href: "/app" },
           { name: "Classes", href: "/classes" },
           { name: "Favorites", href: "/favorites" },
           { name: "Planner", href: "/planner" },
@@ -40,12 +41,15 @@ export function Header({ user }: HeaderProps) {
         { name: "Pricing", href: "/pricing" },
       ];
 
+  // Logo link: /app for logged-in users, / for guests
+  const logoHref = user ? "/app" : "/";
+
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-40 glass border-b border-pink-100/50 pt-6 sm:pt-0">
         <nav className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8">
           <div className="flex lg:flex-1">
-            <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-2 group">
+            <Link href={logoHref} className="-m-1.5 p-1.5 flex items-center gap-2 group">
               <LotusFlower className="w-8 h-8 text-pink-400 group-hover:scale-110 transition-transform" />
               <span className="text-2xl font-display font-bold text-gradient">
                 JoginAna
@@ -130,7 +134,7 @@ export function Header({ user }: HeaderProps) {
           <div className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gradient-to-br from-white to-pink-50 px-6 py-6 pt-14 sm:pt-6 sm:max-w-sm shadow-2xl">
             <div className="flex items-center justify-between">
               <Link
-                href="/"
+                href={logoHref}
                 className="-m-1.5 p-1.5 flex items-center gap-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
