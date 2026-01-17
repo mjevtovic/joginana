@@ -76,8 +76,8 @@ export function InstallPrompt() {
   // iOS Safari prompt with instructions
   if (showIOSPrompt) {
     return (
-      <div className="fixed bottom-20 left-4 right-4 z-40 animate-in slide-in-from-bottom-4 duration-300">
-        <div className="relative rounded-2xl shadow-2xl p-4 bg-gray-800 border border-gray-700">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
+        <div className="relative rounded-2xl shadow-2xl p-4 bg-gray-800 border border-gray-700 max-w-sm w-full">
           <button
             onClick={handleDismiss}
             className="absolute top-3 right-3 p-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
@@ -118,8 +118,8 @@ export function InstallPrompt() {
 
   // Android/Chrome install button
   return (
-    <div className="fixed bottom-20 left-4 right-4 z-40 animate-in slide-in-from-bottom-4 duration-300">
-      <div className="relative rounded-2xl shadow-2xl p-4 bg-gray-800 border border-gray-700">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="relative rounded-2xl shadow-2xl p-4 bg-gray-800 border border-gray-700 max-w-sm w-full">
         <button
           onClick={handleDismiss}
           className="absolute top-3 right-3 p-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
