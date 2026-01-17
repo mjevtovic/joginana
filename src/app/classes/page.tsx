@@ -51,10 +51,12 @@ export default function ClassesPage() {
         }
       }
 
-      // Get classes
+      // Get classes - sorted by admin-defined order
       const { data: classesData } = await supabase
         .from("classes")
         .select("*")
+        .eq("published", true)
+        .order("sort_order", { ascending: true, nullsFirst: false })
         .order("created_at", { ascending: false });
 
       if (classesData) {

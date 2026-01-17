@@ -17,12 +17,24 @@ export function Header({ user }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
+  // Detect if we're in the /app section (PWA routes)
+  const isInAppSection = pathname.startsWith("/app");
+
+  // Use /app routes when in the app section, otherwise use desktop routes
   const navigation = user
-    ? [
-        { name: "Classes", href: "/classes" },
-        { name: "Favorites", href: "/favorites" },
-        { name: "Planner", href: "/planner" },
-      ]
+    ? isInAppSection
+      ? [
+          { name: "Home", href: "/" },
+          { name: "Classes", href: "/app/classes" },
+          { name: "Plan", href: "/app/plan" },
+          { name: "Profile", href: "/app/profile" },
+        ]
+      : [
+          { name: "Home", href: "/" },
+          { name: "Classes", href: "/classes" },
+          { name: "Favorites", href: "/favorites" },
+          { name: "Planner", href: "/planner" },
+        ]
     : [
         { name: "Features", href: "/#features" },
         { name: "Pricing", href: "/pricing" },
@@ -53,21 +65,25 @@ export function Header({ user }: HeaderProps) {
           </div>
 
           <div className="hidden lg:flex lg:gap-x-8">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn(
-                  "text-sm font-medium transition-colors relative",
-                  pathname === item.href
-                    ? "text-primary-600"
-                    : "text-sage-700 hover:text-primary-600",
-                  pathname === item.href && "after:absolute after:-bottom-1 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-primary-500 after:to-pink-500 after:rounded-full"
-                )}
-              >
-                {item.name}
-              </Link>
-            ))}
+            {navigation.map((item) => {
+              const isActive = pathname === item.href ||
+                (item.href !== "/" && pathname.startsWith(item.href));
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    "text-sm font-medium transition-colors relative",
+                    isActive
+                      ? "text-primary-600"
+                      : "text-sage-700 hover:text-primary-600",
+                    isActive && "after:absolute after:-bottom-1 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-primary-500 after:to-pink-500 after:rounded-full"
+                  )}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4">
@@ -135,21 +151,25 @@ export function Header({ user }: HeaderProps) {
             <div className="mt-6 flow-root">
               <div className="-my-6 divide-y divide-pink-100">
                 <div className="space-y-2 py-6">
-                  {navigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className={cn(
-                        "-mx-3 block rounded-xl px-3 py-2.5 text-base font-medium transition-all",
-                        pathname === item.href
-                          ? "bg-gradient-to-r from-primary-50 to-pink-50 text-primary-600 shadow-sm"
-                          : "text-sage-700 hover:bg-pink-50"
-                      )}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
+                  {navigation.map((item) => {
+                    const isActive = pathname === item.href ||
+                      (item.href !== "/" && pathname.startsWith(item.href));
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className={cn(
+                          "-mx-3 block rounded-xl px-3 py-2.5 text-base font-medium transition-all",
+                          isActive
+                            ? "bg-gradient-to-r from-primary-50 to-pink-50 text-primary-600 shadow-sm"
+                            : "text-sage-700 hover:bg-pink-50"
+                        )}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    );
+                  })}
                 </div>
                 <div className="py-6">
                   {user ? (

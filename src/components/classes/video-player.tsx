@@ -3,9 +3,10 @@
 interface VideoPlayerProps {
   videoUrl: string;
   title: string;
+  posterUrl?: string | null;
 }
 
-export function VideoPlayer({ videoUrl, title }: VideoPlayerProps) {
+export function VideoPlayer({ videoUrl, title, posterUrl }: VideoPlayerProps) {
   // Check for embedded video platforms
   const isYouTube =
     videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be");
@@ -44,6 +45,7 @@ export function VideoPlayer({ videoUrl, title }: VideoPlayerProps) {
   }
 
   // Native video player for direct video URLs (MP4, WebM, etc.)
+  // Use thumbnail as poster, or fall back to showing first frame via preload="metadata"
   return (
     <div className="relative aspect-video rounded-xl overflow-hidden bg-sage-900">
       <video
@@ -53,6 +55,7 @@ export function VideoPlayer({ videoUrl, title }: VideoPlayerProps) {
         controlsList="nodownload"
         playsInline
         preload="metadata"
+        poster={posterUrl || undefined}
       >
         Your browser does not support the video tag.
       </video>

@@ -41,6 +41,7 @@ export interface YogaClass {
   stripe_price_id?: string | null;
   published?: boolean;
   updated_at?: string;
+  sort_order?: number | null;
 }
 
 export interface ClassRating {

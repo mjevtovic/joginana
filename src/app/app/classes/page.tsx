@@ -49,6 +49,8 @@ export default function AppClassesPage() {
       const { data: classesData } = await supabase
         .from("classes")
         .select("*")
+        .eq("published", true)
+        .order("sort_order", { ascending: true, nullsFirst: false })
         .order("created_at", { ascending: false });
 
       if (classesData) {
