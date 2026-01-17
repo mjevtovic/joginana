@@ -11,7 +11,7 @@ const tiers = [
     name: "Free",
     id: "free",
     price: "$0",
-    description: "Perfect for trying out YogaFlow",
+    description: "Perfect for trying out JoginAna",
     features: [
       "2 free preview classes",
       "Browse full class library",

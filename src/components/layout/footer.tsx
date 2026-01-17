@@ -7,7 +7,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <span className="text-2xl font-display font-bold text-white">
-              YogaFlow
+              JoginAna
             </span>
             <p className="mt-4 text-sm">
               Transform your practice with personalized yoga sessions designed
@@ -99,7 +99,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 border-t border-sage-800 pt-8 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} YogaFlow. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} JoginAna. All rights reserved.</p>
         </div>
       </div>
     </footer>
