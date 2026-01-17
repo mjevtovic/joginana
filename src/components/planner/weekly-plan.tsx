@@ -118,7 +118,7 @@ export function WeeklyPlan({ sessions: initialSessions, planId }: WeeklyPlanProp
 
                     <div className="flex-1 min-w-0">
                       <Link
-                        href={`/classes/${session.class_id}`}
+                        href={`/app/classes/${session.class_id}`}
                         className={cn(
                           "font-medium hover:text-primary-600 transition-colors",
                           session.completed
@@ -142,7 +142,7 @@ export function WeeklyPlan({ sessions: initialSessions, planId }: WeeklyPlanProp
                     </div>
 
                     {!session.completed && (
-                      <Link href={`/classes/${session.class_id}`}>
+                      <Link href={`/app/classes/${session.class_id}`}>
                         <Button size="sm" variant="outline">
                           <Play className="h-4 w-4 mr-1" />
                           Start

@@ -123,7 +123,7 @@ export function ClassCard({
       </div>
 
       {/* Content */}
-      <Link href={isLocked ? "/pricing" : `/classes/${yogaClass.id}`}>
+      <Link href={isLocked ? "/app/upgrade" : `/app/classes/${yogaClass.id}`}>
         <div className="p-5">
           <div className="flex items-center gap-2 mb-3 flex-wrap">
             {difficulty && (
