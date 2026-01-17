@@ -55,7 +55,7 @@ export function InstallPrompt() {
 
   // Lock body scroll when dialog is visible
   useEffect(() => {
-    const shouldShow = !isStandalone && !dismissed && (deferredPrompt || showIOSPrompt);
+    const shouldShow = !isStandalone && !dismissed && !!(deferredPrompt || showIOSPrompt);
     setIsVisible(shouldShow);
 
     if (shouldShow) {
