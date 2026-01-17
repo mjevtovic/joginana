@@ -57,7 +57,8 @@ export function ClassComments({ classId, userId, userName }: ClassCommentsProps)
     const supabase = createClient();
 
     try {
-      const { data, error: insertError } = await supabase
+      // First insert the comment
+      const { data: insertData, error: insertError } = await supabase
         .from("class_comments")
         .insert({
           class_id: classId,
@@ -65,18 +66,26 @@ export function ClassComments({ classId, userId, userName }: ClassCommentsProps)
           body: newComment.trim(),
           status: "published",
         })
-        .select(`
-          *,
-          profile:profiles(full_name, avatar_url)
-        `)
+        .select("*")
         .single();
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        console.error("Insert error:", insertError);
+        throw insertError;
+      }
 
-      setComments((prev) => [data, ...prev]);
+      // Add to comments with profile info
+      const newCommentData = {
+        ...insertData,
+        profile: { full_name: userName || null, avatar_url: null },
+      };
+
+      setComments((prev) => [newCommentData, ...prev]);
       setNewComment("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to post comment");
+      console.error("Comment error:", err);
+      const errorMessage = err instanceof Error ? err.message : JSON.stringify(err);
+      setError(errorMessage);
     } finally {
       setSubmitting(false);
     }
