@@ -77,36 +77,36 @@ export function InstallPrompt() {
   if (showIOSPrompt) {
     return (
       <div className="fixed bottom-20 left-4 right-4 z-40 animate-in slide-in-from-bottom-4 duration-300">
-        <div className="relative glass rounded-2xl border border-pink-200 shadow-xl p-4">
+        <div className="relative rounded-2xl shadow-2xl p-4 bg-gradient-to-br from-primary-600 via-primary-700 to-pink-600 border border-primary-400">
           <button
             onClick={handleDismiss}
-            className="absolute top-3 right-3 p-1.5 rounded-full bg-sage-100 hover:bg-sage-200 transition-colors"
+            className="absolute top-3 right-3 p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
           >
-            <X className="w-4 h-4 text-sage-600" />
+            <X className="w-4 h-4 text-white" />
           </button>
 
           <div className="flex items-start gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0">
               <Download className="w-6 h-6 text-white" />
             </div>
 
             <div className="flex-1 pr-6">
-              <h3 className="font-display font-bold text-sage-900 mb-1">
+              <h3 className="font-display font-bold text-white mb-1">
                 Add to Home Screen
               </h3>
-              <p className="text-sm text-sage-600 mb-3">
+              <p className="text-sm text-white/80 mb-3">
                 Install JoginAna for quick access and a better experience
               </p>
 
-              <div className="flex items-center gap-2 text-sm text-sage-700 bg-pink-50 rounded-xl p-3">
+              <div className="flex items-center gap-2 text-sm text-white bg-white/20 backdrop-blur rounded-xl p-3">
                 <span>Tap</span>
-                <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white border border-pink-200">
+                <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white">
                   <Share className="w-4 h-4 text-blue-500" />
                 </span>
                 <span>then</span>
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-white border border-pink-200">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-white text-sage-800">
                   <Plus className="w-4 h-4" />
-                  <span className="text-xs">Add to Home Screen</span>
+                  <span className="text-xs font-medium">Add to Home Screen</span>
                 </span>
               </div>
             </div>
@@ -119,24 +119,24 @@ export function InstallPrompt() {
   // Android/Chrome install button
   return (
     <div className="fixed bottom-20 left-4 right-4 z-40 animate-in slide-in-from-bottom-4 duration-300">
-      <div className="relative glass rounded-2xl border border-pink-200 shadow-xl p-4">
+      <div className="relative rounded-2xl shadow-2xl p-4 bg-gradient-to-br from-primary-600 via-primary-700 to-pink-600 border border-primary-400">
         <button
           onClick={handleDismiss}
-          className="absolute top-3 right-3 p-1.5 rounded-full bg-sage-100 hover:bg-sage-200 transition-colors"
+          className="absolute top-3 right-3 p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
         >
-          <X className="w-4 h-4 text-sage-600" />
+          <X className="w-4 h-4 text-white" />
         </button>
 
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0">
             <Download className="w-6 h-6 text-white" />
           </div>
 
           <div className="flex-1">
-            <h3 className="font-display font-bold text-sage-900 mb-0.5">
+            <h3 className="font-display font-bold text-white mb-0.5">
               Install JoginAna
             </h3>
-            <p className="text-sm text-sage-500">
+            <p className="text-sm text-white/80">
               Add to home screen for quick access
             </p>
           </div>
@@ -144,7 +144,7 @@ export function InstallPrompt() {
           <Button
             onClick={handleInstall}
             size="sm"
-            className="bg-gradient-to-r from-primary-500 to-pink-500 text-white rounded-xl px-4"
+            className="bg-white text-primary-700 hover:bg-white/90 font-semibold rounded-xl px-4"
           >
             Install
           </Button>
