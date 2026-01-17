@@ -275,7 +275,12 @@ export default function AppClassesPage() {
                   <ClassCard
                     yogaClass={yogaClass}
                     isFavorite={favorites.has(yogaClass.id)}
-                    isLocked={yogaClass.is_premium && profile?.subscription_status !== 'active'}
+                    isLocked={
+                      // Only lock subscriber-only classes for non-subscribers
+                      // One-time purchase classes should NOT be locked - they're purchasable
+                      yogaClass.access_type === 'subscriber' &&
+                      profile?.subscription_status !== 'active'
+                    }
                     onToggleFavorite={profile ? toggleFavorite : undefined}
                     averageRating={stats?.average_rating}
                     ratingCount={stats?.rating_count || 0}

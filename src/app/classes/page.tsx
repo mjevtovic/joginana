@@ -122,6 +122,8 @@ export default function ClassesPage() {
   const isClassLocked = (yogaClass: YogaClass) => {
     if (isSubscribed) return false;
     if (!yogaClass.is_premium) return false;
+    // One-time purchase classes should NOT be locked - they're purchasable
+    if (yogaClass.access_type === 'one_time') return false;
     if (freeClassIds.has(yogaClass.id)) return false;
     return true;
   };

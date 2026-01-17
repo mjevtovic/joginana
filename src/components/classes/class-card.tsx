@@ -73,18 +73,7 @@ export function ClassCard({
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-          {/* One-time price ribbon in top-right corner */}
-          {yogaClass.access_type === "one_time" && yogaClass.one_time_price_cents && (
-            <div className="absolute top-0 right-0">
-              <div className="relative">
-                <div className="bg-gradient-to-r from-primary-500 to-pink-500 text-white text-sm font-bold px-4 py-1.5 rounded-bl-2xl shadow-lg">
-                  {formatPrice(yogaClass.one_time_price_cents, yogaClass.currency || "EUR")}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Overlay for locked content */}
+          {/* Overlay for locked content (subscriber-only classes) */}
           {isLocked && (
             <div className="absolute inset-0 bg-sage-900/70 backdrop-blur-sm flex items-center justify-center">
               <div className="text-center text-white">
@@ -93,6 +82,15 @@ export function ClassCard({
                 </div>
                 <p className="font-semibold">Premium Only</p>
                 <p className="text-sm text-white/70">Unlock with subscription</p>
+              </div>
+            </div>
+          )}
+
+          {/* One-time price ribbon in top-right corner - always on top */}
+          {yogaClass.access_type === "one_time" && yogaClass.one_time_price_cents && (
+            <div className="absolute top-0 right-0 z-20">
+              <div className="bg-gradient-to-r from-primary-500 to-pink-500 text-white text-sm font-bold px-4 py-1.5 rounded-bl-2xl shadow-lg">
+                {formatPrice(yogaClass.one_time_price_cents, yogaClass.currency || "EUR")}
               </div>
             </div>
           )}
