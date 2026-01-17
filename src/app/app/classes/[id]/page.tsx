@@ -256,7 +256,7 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
           <ClassComments
             classId={yogaClass.id}
             userId={user?.id}
-            userName={profile?.full_name || undefined}
+            userName={profile?.full_name || user?.email?.split("@")[0] || undefined}
           />
         </div>
       </div>
