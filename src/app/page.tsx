@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowRight, Calendar, Heart, Play, Sparkles, Moon, Sun, Flower2, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/header";
@@ -72,15 +73,9 @@ export default async function HomePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Fetch profile if user is logged in
-  let profile = null;
+  // If user is logged in, redirect to /app (the mobile-first dashboard)
   if (user) {
-    const { data: profileData } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
-    profile = profileData;
+    redirect("/app");
   }
 
   return (
@@ -92,7 +87,7 @@ export default async function HomePage() {
       {/* Global decorative elements */}
       <FloatingFlowers className="fixed" />
 
-      <Header user={profile} />
+      <Header user={null} />
 
       {/* Hero Section */}
       <section className="relative isolate pt-24 lg:pt-32 overflow-hidden">
