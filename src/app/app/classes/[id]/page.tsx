@@ -1,11 +1,14 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Clock, Share2 } from "lucide-react";
+import { ArrowLeft, Clock, Share2, Lock } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { VideoPlayer } from "@/components/classes/video-player";
 import { Button } from "@/components/ui/button";
 import { formatDuration, capitalize } from "@/lib/utils";
 import { FavoriteButton } from "./favorite-button";
+import { ClassRating } from "@/components/classes/class-rating";
+import { ClassComments } from "@/components/classes/class-comments";
+import { PurchaseButton } from "@/components/classes/purchase-button";
 import type { YogaClass, Profile, Difficulty } from "@/types/database";
 
 interface ClassDetailPageProps {
@@ -55,11 +58,31 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
 
   const yogaClass = classData as YogaClass;
 
-  // Check access
+  // Check access based on access_type
   const isSubscribed = (profile as Profile | null)?.subscription_status === "active";
-  const hasAccess = !yogaClass.is_premium || isSubscribed;
+  const accessType = yogaClass.access_type || "subscriber";
 
-  if (!hasAccess) {
+  // Check if user has purchased this class (for one_time access)
+  let hasPurchased = false;
+  if (user && accessType === "one_time") {
+    const { data: purchaseData } = await supabase
+      .from("class_purchases")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("class_id", id)
+      .eq("status", "paid")
+      .single();
+    hasPurchased = !!purchaseData;
+  }
+
+  // Determine access
+  const hasAccess =
+    accessType === "free" ||
+    isSubscribed ||
+    (accessType === "one_time" && hasPurchased);
+
+  // For subscriber-only content, redirect to upgrade
+  if (accessType === "subscriber" && !isSubscribed) {
     redirect("/app/upgrade");
   }
 
@@ -80,12 +103,39 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
         Back to classes
       </Link>
 
-      {/* Video player */}
-      {yogaClass.video_url ? (
-        <VideoPlayer videoUrl={yogaClass.video_url} title={yogaClass.title} />
+      {/* Video player or locked state */}
+      {hasAccess ? (
+        yogaClass.video_url ? (
+          <VideoPlayer videoUrl={yogaClass.video_url} title={yogaClass.title} />
+        ) : (
+          <div className="aspect-video rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
+            <p className="text-white text-lg">Video coming soon</p>
+          </div>
+        )
       ) : (
-        <div className="aspect-video rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
-          <p className="text-white text-lg">Video coming soon</p>
+        <div className="aspect-video rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 flex flex-col items-center justify-center text-white relative overflow-hidden">
+          {yogaClass.thumbnail_url && (
+            <img
+              src={yogaClass.thumbnail_url}
+              alt={yogaClass.title}
+              className="absolute inset-0 w-full h-full object-cover opacity-30"
+            />
+          )}
+          <div className="relative z-10 text-center px-6">
+            <Lock className="w-12 h-12 mx-auto mb-4 opacity-80" />
+            <p className="text-lg font-medium mb-2">Purchase to watch</p>
+            <p className="text-sm text-gray-300 mb-4">
+              Get lifetime access to this class
+            </p>
+            <PurchaseButton
+              classId={yogaClass.id}
+              priceCents={yogaClass.one_time_price_cents || 0}
+              currency={yogaClass.currency || "EUR"}
+              isPurchased={hasPurchased}
+              isSubscriber={isSubscribed}
+              isLoggedIn={!!user}
+            />
+          </div>
         </div>
       )}
 
@@ -124,10 +174,52 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
           </p>
         )}
 
+        {/* Rating */}
+        <div className="mt-4">
+          <ClassRating
+            classId={yogaClass.id}
+            userId={user?.id}
+            size="md"
+            readonly={!hasAccess}
+          />
+        </div>
+
         {yogaClass.description && (
           <p className="mt-4 text-sage-700 leading-relaxed">
             {yogaClass.description}
           </p>
+        )}
+
+        {/* Focus & Equipment Tags */}
+        {(yogaClass.focus_tags?.length || yogaClass.equipment_tags?.length) && (
+          <div className="mt-4 space-y-2">
+            {yogaClass.focus_tags && yogaClass.focus_tags.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                <span className="text-sm text-sage-500">Focus:</span>
+                {yogaClass.focus_tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs px-2 py-1 bg-primary-50 text-primary-700 rounded-full"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+            {yogaClass.equipment_tags && yogaClass.equipment_tags.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                <span className="text-sm text-sage-500">Equipment:</span>
+                {yogaClass.equipment_tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs px-2 py-1 bg-sage-100 text-sage-700 rounded-full"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         )}
 
         {/* Actions */}
@@ -143,6 +235,29 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
             <Share2 className="mr-2 h-4 w-4" />
             Share
           </Button>
+        </div>
+
+        {/* Purchase Button (for one_time classes without access) */}
+        {accessType === "one_time" && !hasAccess && (
+          <div className="mt-6 p-4 bg-gradient-to-r from-primary-50 to-pink-50 rounded-xl border border-primary-100">
+            <PurchaseButton
+              classId={yogaClass.id}
+              priceCents={yogaClass.one_time_price_cents || 0}
+              currency={yogaClass.currency || "EUR"}
+              isPurchased={hasPurchased}
+              isSubscriber={isSubscribed}
+              isLoggedIn={!!user}
+            />
+          </div>
+        )}
+
+        {/* Comments Section */}
+        <div className="mt-8 pt-8 border-t border-gray-100">
+          <ClassComments
+            classId={yogaClass.id}
+            userId={user?.id}
+            userName={profile?.full_name || undefined}
+          />
         </div>
       </div>
     </div>

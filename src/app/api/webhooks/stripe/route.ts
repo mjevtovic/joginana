@@ -37,16 +37,34 @@ export async function POST(request: NextRequest) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         const customerId = session.customer as string;
-        const subscriptionId = session.subscription as string;
 
-        // Update profile with subscription info
-        await supabase
-          .from("profiles")
-          .update({
-            subscription_status: "active",
-            subscription_id: subscriptionId,
-          })
-          .eq("stripe_customer_id", customerId);
+        // Check if this is a class purchase or subscription
+        const metadata = session.metadata;
+        if (metadata?.type === "class_purchase" && metadata?.class_id) {
+          // Handle one-time class purchase
+          const paymentIntent = session.payment_intent as string;
+
+          await supabase
+            .from("class_purchases")
+            .update({
+              status: "paid",
+              stripe_payment_intent_id: paymentIntent,
+            })
+            .eq("stripe_checkout_session_id", session.id);
+
+          console.log(`Class purchase completed: ${metadata.class_id}`);
+        } else {
+          // Handle subscription checkout
+          const subscriptionId = session.subscription as string;
+
+          await supabase
+            .from("profiles")
+            .update({
+              subscription_status: "active",
+              subscription_id: subscriptionId,
+            })
+            .eq("stripe_customer_id", customerId);
+        }
 
         break;
       }

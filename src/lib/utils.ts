@@ -20,3 +20,10 @@ export function formatDuration(minutes: number): string {
 export function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+export function formatPrice(cents: number, currency: string = "EUR"): string {
+  return new Intl.NumberFormat("en-EU", {
+    style: "currency",
+    currency: currency,
+  }).format(cents / 100);
+}
