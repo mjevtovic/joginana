@@ -1,0 +1,252 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Main cosmic gradient background -->
+    <radialGradient id="cosmicBg" cx="50%" cy="40%" r="70%" fx="30%" fy="30%">
+      <stop offset="0%" style="stop-color:#7c3aed"/>
+      <stop offset="30%" style="stop-color:#9333ea"/>
+      <stop offset="60%" style="stop-color:#a855f7"/>
+      <stop offset="80%" style="stop-color:#c026d3"/>
+      <stop offset="100%" style="stop-color:#1e1b4b"/>
+    </radialGradient>
+
+    <!-- Pink nebula overlay -->
+    <radialGradient id="pinkNebula" cx="80%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.8"/>
+      <stop offset="50%" style="stop-color:#db2777;stop-opacity:0.4"/>
+      <stop offset="100%" style="stop-color:#9333ea;stop-opacity:0"/>
+    </radialGradient>
+
+    <!-- Blue nebula overlay -->
+    <radialGradient id="blueNebula" cx="20%" cy="30%" r="40%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0"/>
+    </radialGradient>
+
+    <!-- Dreamcatcher gradient -->
+    <linearGradient id="catcherGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e9d5ff"/>
+      <stop offset="50%" style="stop-color:#c4b5fd"/>
+      <stop offset="100%" style="stop-color:#a78bfa"/>
+    </linearGradient>
+
+    <!-- Feather gradient -->
+    <linearGradient id="featherGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c4b5fd"/>
+      <stop offset="50%" style="stop-color:#a78bfa"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+
+    <!-- Glow filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Star glow -->
+    <filter id="starGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background - Full square cosmic gradient -->
+  <rect width="1024" height="1024" fill="url(#cosmicBg)"/>
+  <rect width="1024" height="1024" fill="url(#pinkNebula)"/>
+  <rect width="1024" height="1024" fill="url(#blueNebula)"/>
+
+  <!-- Stars scattered across background -->
+  <g fill="white" filter="url(#starGlow)">
+    <!-- Large stars -->
+    <circle cx="150" cy="180" r="4" opacity="0.9"/>
+    <circle cx="880" cy="220" r="3.5" opacity="0.85"/>
+    <circle cx="200" cy="850" r="3" opacity="0.8"/>
+    <circle cx="850" cy="800" r="4" opacity="0.9"/>
+    <circle cx="100" cy="500" r="3" opacity="0.7"/>
+    <circle cx="920" cy="550" r="3.5" opacity="0.85"/>
+
+    <!-- Medium stars -->
+    <circle cx="300" cy="120" r="2.5" opacity="0.7"/>
+    <circle cx="750" cy="150" r="2" opacity="0.6"/>
+    <circle cx="180" cy="350" r="2.5" opacity="0.75"/>
+    <circle cx="870" cy="380" r="2" opacity="0.65"/>
+    <circle cx="130" cy="680" r="2.5" opacity="0.7"/>
+    <circle cx="900" cy="700" r="2" opacity="0.6"/>
+    <circle cx="250" cy="950" r="2.5" opacity="0.75"/>
+    <circle cx="780" cy="920" r="2" opacity="0.65"/>
+
+    <!-- Small stars -->
+    <circle cx="400" cy="80" r="1.5" opacity="0.5"/>
+    <circle cx="620" cy="100" r="1.5" opacity="0.55"/>
+    <circle cx="500" cy="180" r="1.5" opacity="0.5"/>
+    <circle cx="80" cy="280" r="1.5" opacity="0.5"/>
+    <circle cx="950" cy="450" r="1.5" opacity="0.55"/>
+    <circle cx="70" cy="750" r="1.5" opacity="0.5"/>
+    <circle cx="960" cy="650" r="1.5" opacity="0.55"/>
+    <circle cx="350" cy="980" r="1.5" opacity="0.5"/>
+    <circle cx="680" cy="950" r="1.5" opacity="0.55"/>
+  </g>
+
+  <!-- Sparkle stars (4-pointed) -->
+  <g fill="white" opacity="0.9" filter="url(#starGlow)">
+    <path d="M820 300 L823 306 L830 308 L823 310 L820 316 L817 310 L810 308 L817 306 Z"/>
+    <path d="M200 600 L203 606 L210 608 L203 610 L200 616 L197 610 L190 608 L197 606 Z"/>
+    <path d="M750 750 L752 754 L757 756 L752 758 L750 762 L748 758 L743 756 L748 754 Z"/>
+    <path d="M280 200 L282 204 L287 206 L282 208 L280 212 L278 208 L273 206 L278 204 Z"/>
+  </g>
+
+  <!-- Dreamcatcher group - centered -->
+  <g transform="translate(512, 480)" filter="url(#glow)">
+    <!-- Hanging loop at top -->
+    <circle cx="0" cy="-280" r="15" fill="none" stroke="url(#catcherGradient)" stroke-width="6"/>
+
+    <!-- Connection from loop to main ring -->
+    <line x1="0" y1="-265" x2="0" y2="-230" stroke="url(#catcherGradient)" stroke-width="5"/>
+
+    <!-- Main outer ring -->
+    <circle cx="0" cy="0" r="220" fill="none" stroke="url(#catcherGradient)" stroke-width="12" opacity="0.95"/>
+
+    <!-- Inner decorative ring -->
+    <circle cx="0" cy="0" r="180" fill="none" stroke="url(#catcherGradient)" stroke-width="4" opacity="0.6"/>
+
+    <!-- Web pattern - radial lines -->
+    <g stroke="url(#catcherGradient)" stroke-width="3" opacity="0.8">
+      <line x1="0" y1="-220" x2="0" y2="220"/>
+      <line x1="-220" y1="0" x2="220" y2="0"/>
+      <line x1="-155" y1="-155" x2="155" y2="155"/>
+      <line x1="155" y1="-155" x2="-155" y2="155"/>
+      <line x1="-190" y1="-110" x2="190" y2="110"/>
+      <line x1="190" y1="-110" x2="-190" y2="110"/>
+      <line x1="-110" y1="-190" x2="110" y2="190"/>
+      <line x1="110" y1="-190" x2="-110" y2="190"/>
+    </g>
+
+    <!-- Web pattern - concentric circles -->
+    <g fill="none" stroke="url(#catcherGradient)" stroke-width="2.5" opacity="0.7">
+      <circle cx="0" cy="0" r="50"/>
+      <circle cx="0" cy="0" r="90"/>
+      <circle cx="0" cy="0" r="130"/>
+      <circle cx="0" cy="0" r="170"/>
+    </g>
+
+    <!-- Center sacred geometry - triangle pointing up -->
+    <polygon points="0,-35 30,18 -30,18" fill="none" stroke="url(#catcherGradient)" stroke-width="4" opacity="0.9"/>
+    <!-- Triangle pointing down -->
+    <polygon points="0,35 30,-18 -30,-18" fill="none" stroke="url(#catcherGradient)" stroke-width="4" opacity="0.9"/>
+    <!-- Center dot -->
+    <circle cx="0" cy="0" r="8" fill="url(#catcherGradient)" opacity="0.9"/>
+
+    <!-- Beads on the ring -->
+    <g fill="url(#catcherGradient)">
+      <circle cx="0" cy="-220" r="10"/>
+      <circle cx="0" cy="220" r="10"/>
+      <circle cx="-190" cy="-110" r="8"/>
+      <circle cx="190" cy="-110" r="8"/>
+      <circle cx="-190" cy="110" r="8"/>
+      <circle cx="190" cy="110" r="8"/>
+    </g>
+
+    <!-- Left feather group -->
+    <g transform="translate(-140, 260)">
+      <!-- Feather string with beads -->
+      <line x1="0" y1="-40" x2="0" y2="30" stroke="url(#catcherGradient)" stroke-width="3"/>
+      <circle cx="0" cy="-20" r="6" fill="url(#catcherGradient)"/>
+      <circle cx="0" cy="10" r="5" fill="url(#catcherGradient)"/>
+
+      <!-- Feather shape -->
+      <path d="M0,30 Q-25,80 -20,150 Q-10,170 0,180 Q10,170 20,150 Q25,80 0,30"
+            fill="url(#featherGradient)" opacity="0.85"/>
+      <!-- Feather spine -->
+      <line x1="0" y1="30" x2="0" y2="175" stroke="url(#catcherGradient)" stroke-width="2" opacity="0.6"/>
+      <!-- Feather details -->
+      <g stroke="url(#catcherGradient)" stroke-width="1" opacity="0.4">
+        <line x1="0" y1="60" x2="-15" y2="70"/>
+        <line x1="0" y1="80" x2="-18" y2="95"/>
+        <line x1="0" y1="100" x2="-17" y2="120"/>
+        <line x1="0" y1="120" x2="-15" y2="145"/>
+        <line x1="0" y1="60" x2="15" y2="70"/>
+        <line x1="0" y1="80" x2="18" y2="95"/>
+        <line x1="0" y1="100" x2="17" y2="120"/>
+        <line x1="0" y1="120" x2="15" y2="145"/>
+      </g>
+    </g>
+
+    <!-- Right feather group -->
+    <g transform="translate(140, 260)">
+      <line x1="0" y1="-40" x2="0" y2="30" stroke="url(#catcherGradient)" stroke-width="3"/>
+      <circle cx="0" cy="-20" r="6" fill="url(#catcherGradient)"/>
+      <circle cx="0" cy="10" r="5" fill="url(#catcherGradient)"/>
+
+      <path d="M0,30 Q-25,80 -20,150 Q-10,170 0,180 Q10,170 20,150 Q25,80 0,30"
+            fill="url(#featherGradient)" opacity="0.85"/>
+      <line x1="0" y1="30" x2="0" y2="175" stroke="url(#catcherGradient)" stroke-width="2" opacity="0.6"/>
+      <g stroke="url(#catcherGradient)" stroke-width="1" opacity="0.4">
+        <line x1="0" y1="60" x2="-15" y2="70"/>
+        <line x1="0" y1="80" x2="-18" y2="95"/>
+        <line x1="0" y1="100" x2="-17" y2="120"/>
+        <line x1="0" y1="120" x2="-15" y2="145"/>
+        <line x1="0" y1="60" x2="15" y2="70"/>
+        <line x1="0" y1="80" x2="18" y2="95"/>
+        <line x1="0" y1="100" x2="17" y2="120"/>
+        <line x1="0" y1="120" x2="15" y2="145"/>
+      </g>
+    </g>
+
+    <!-- Center feather (longer) -->
+    <g transform="translate(0, 280)">
+      <line x1="0" y1="-60" x2="0" y2="50" stroke="url(#catcherGradient)" stroke-width="3"/>
+      <circle cx="0" cy="-35" r="7" fill="url(#catcherGradient)"/>
+      <circle cx="0" cy="-10" r="6" fill="url(#catcherGradient)"/>
+      <circle cx="0" cy="15" r="5" fill="url(#catcherGradient)"/>
+
+      <!-- Chakra symbol 1 -->
+      <g transform="translate(0, 55)">
+        <circle cx="0" cy="0" r="22" fill="none" stroke="url(#catcherGradient)" stroke-width="3" opacity="0.9"/>
+        <polygon points="0,-12 10,6 -10,6" fill="none" stroke="url(#catcherGradient)" stroke-width="2"/>
+        <polygon points="0,12 10,-6 -10,-6" fill="none" stroke="url(#catcherGradient)" stroke-width="2"/>
+      </g>
+
+      <!-- Connecting line -->
+      <line x1="0" y1="77" x2="0" y2="100" stroke="url(#catcherGradient)" stroke-width="3"/>
+
+      <!-- Chakra symbol 2 -->
+      <g transform="translate(0, 130)">
+        <circle cx="0" cy="0" r="28" fill="none" stroke="url(#catcherGradient)" stroke-width="3" opacity="0.85"/>
+        <!-- Lotus petals around -->
+        <g fill="url(#featherGradient)" opacity="0.7">
+          <ellipse cx="0" cy="-22" rx="8" ry="12" transform="rotate(0)"/>
+          <ellipse cx="19" cy="-11" rx="8" ry="12" transform="rotate(60)"/>
+          <ellipse cx="19" cy="11" rx="8" ry="12" transform="rotate(120)"/>
+          <ellipse cx="0" cy="22" rx="8" ry="12" transform="rotate(180)"/>
+          <ellipse cx="-19" cy="11" rx="8" ry="12" transform="rotate(240)"/>
+          <ellipse cx="-19" cy="-11" rx="8" ry="12" transform="rotate(300)"/>
+        </g>
+        <polygon points="0,-10 9,5 -9,5" fill="none" stroke="url(#catcherGradient)" stroke-width="2"/>
+        <polygon points="0,10 9,-5 -9,-5" fill="none" stroke="url(#catcherGradient)" stroke-width="2"/>
+      </g>
+    </g>
+
+    <!-- Far left small feather -->
+    <g transform="translate(-200, 200) rotate(-15)">
+      <line x1="0" y1="0" x2="0" y2="40" stroke="url(#catcherGradient)" stroke-width="2"/>
+      <circle cx="0" cy="20" r="4" fill="url(#catcherGradient)"/>
+      <path d="M0,40 Q-15,70 -12,110 Q-5,120 0,125 Q5,120 12,110 Q15,70 0,40"
+            fill="url(#featherGradient)" opacity="0.7"/>
+      <line x1="0" y1="40" x2="0" y2="120" stroke="url(#catcherGradient)" stroke-width="1.5" opacity="0.5"/>
+    </g>
+
+    <!-- Far right small feather -->
+    <g transform="translate(200, 200) rotate(15)">
+      <line x1="0" y1="0" x2="0" y2="40" stroke="url(#catcherGradient)" stroke-width="2"/>
+      <circle cx="0" cy="20" r="4" fill="url(#catcherGradient)"/>
+      <path d="M0,40 Q-15,70 -12,110 Q-5,120 0,125 Q5,120 12,110 Q15,70 0,40"
+            fill="url(#featherGradient)" opacity="0.7"/>
+      <line x1="0" y1="40" x2="0" y2="120" stroke="url(#catcherGradient)" stroke-width="1.5" opacity="0.5"/>
+    </g>
+  </g>
+</svg>
