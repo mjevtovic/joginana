@@ -2,6 +2,14 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 /**
+ * GET /api/mux/webhook
+ * Simple health check to confirm the route is deployed and reachable.
+ */
+export async function GET() {
+  return NextResponse.json({ status: "Mux webhook endpoint is live" });
+}
+
+/**
  * POST /api/mux/webhook
  * Handles Mux webhook events.
  * When a video finishes processing, we update the class record
