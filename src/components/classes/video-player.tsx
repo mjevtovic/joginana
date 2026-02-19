@@ -1,12 +1,35 @@
 "use client";
 
+import MuxPlayer from "@mux/mux-player-react";
+
 interface VideoPlayerProps {
-  videoUrl: string;
+  videoUrl?: string | null;
+  muxPlaybackId?: string | null;
   title: string;
   posterUrl?: string | null;
 }
 
-export function VideoPlayer({ videoUrl, title, posterUrl }: VideoPlayerProps) {
+export function VideoPlayer({ videoUrl, muxPlaybackId, title, posterUrl }: VideoPlayerProps) {
+  // Priority: Mux playback > YouTube/Vimeo embed > direct video URL
+  if (muxPlaybackId) {
+    return (
+      <div className="relative aspect-video rounded-xl overflow-hidden bg-sage-900">
+        <MuxPlayer
+          playbackId={muxPlaybackId}
+          metadata={{ video_title: title }}
+          streamType="on-demand"
+          accentColor="#7c8c6e"
+          poster={posterUrl || undefined}
+          style={{ width: "100%", height: "100%", aspectRatio: "16/9" }}
+        />
+      </div>
+    );
+  }
+
+  if (!videoUrl) {
+    return null;
+  }
+
   // Check for embedded video platforms
   const isYouTube =
     videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be");
@@ -45,7 +68,6 @@ export function VideoPlayer({ videoUrl, title, posterUrl }: VideoPlayerProps) {
   }
 
   // Native video player for direct video URLs (MP4, WebM, etc.)
-  // Use thumbnail as poster, or fall back to showing first frame via preload="metadata"
   return (
     <div className="relative aspect-video rounded-xl overflow-hidden bg-sage-900">
       <video

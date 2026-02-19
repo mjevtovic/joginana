@@ -87,8 +87,13 @@ export default async function ClassDetailPage({ params }: ClassDetailPageProps) 
           </Link>
 
           {/* Video player */}
-          {yogaClass.video_url ? (
-            <VideoPlayer videoUrl={yogaClass.video_url} title={yogaClass.title} posterUrl={yogaClass.thumbnail_url} />
+          {yogaClass.mux_playback_id || yogaClass.video_url ? (
+            <VideoPlayer
+              videoUrl={yogaClass.video_url}
+              muxPlaybackId={yogaClass.mux_playback_id}
+              title={yogaClass.title}
+              posterUrl={yogaClass.thumbnail_url}
+            />
           ) : (
             <div className="aspect-video rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
               <p className="text-white text-lg">Video coming soon</p>

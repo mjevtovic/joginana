@@ -32,6 +32,10 @@ export interface YogaClass {
   thumbnail_url: string | null;
   is_premium: boolean;
   created_at: string;
+  // Mux video fields
+  mux_upload_id?: string | null;
+  mux_asset_id?: string | null;
+  mux_playback_id?: string | null;
   // New fields for admin CMS
   focus_tags?: string[];
   equipment_tags?: string[];

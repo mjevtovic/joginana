@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Upload, Loader2, X } from "lucide-react";
+import { ArrowLeft, Upload, Loader2, X, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import type { Difficulty, AccessType } from "@/types/database";
@@ -18,6 +18,7 @@ export default function NewClassPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [videoUploadProgress, setVideoUploadProgress] = useState<string | null>(null);
   const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,6 +31,7 @@ export default function NewClassPage() {
     style: "",
     video_url: "",
     thumbnail_url: "",
+    mux_upload_id: "",
     access_type: "subscriber" as AccessType,
     one_time_price_cents: 499,
     currency: "EUR",
@@ -43,31 +45,40 @@ export default function NewClassPage() {
     if (!file) return;
 
     setUploadingVideo(true);
+    setVideoUploadProgress("Requesting upload URL...");
     setError(null);
 
     try {
-      const supabase = createClient();
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-      const filePath = `videos/${fileName}`;
+      const res = await fetch("/api/mux/upload", { method: "POST" });
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Failed to create upload");
+      }
+      const { uploadId, uploadUrl } = await res.json();
 
-      const { error: uploadError } = await supabase.storage
-        .from("class-media")
-        .upload(filePath, file, {
-          cacheControl: "3600",
-          upsert: false,
-        });
+      setVideoUploadProgress("Uploading video to Mux...");
 
-      if (uploadError) throw uploadError;
+      const uploadRes = await fetch(uploadUrl, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
 
-      // Get public URL
-      const { data: urlData } = supabase.storage
-        .from("class-media")
-        .getPublicUrl(filePath);
+      if (!uploadRes.ok) {
+        throw new Error("Failed to upload video to Mux");
+      }
 
-      setFormData((prev) => ({ ...prev, video_url: urlData.publicUrl }));
+      setFormData((prev) => ({
+        ...prev,
+        mux_upload_id: uploadId,
+        video_url: "",
+      }));
+      setVideoUploadProgress("Uploaded! Video is processing...");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to upload video");
+      setVideoUploadProgress(null);
     } finally {
       setUploadingVideo(false);
     }
@@ -133,6 +144,7 @@ export default function NewClassPage() {
         style: formData.style || null,
         video_url: formData.video_url || null,
         thumbnail_url: formData.thumbnail_url || null,
+        mux_upload_id: formData.mux_upload_id || null,
         access_type: formData.access_type,
         one_time_price_cents: formData.access_type === "one_time" ? formData.one_time_price_cents : null,
         currency: formData.currency,
@@ -175,15 +187,12 @@ export default function NewClassPage() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Basic Info */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Title *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
               <input
                 type="text"
                 required
@@ -195,9 +204,7 @@ export default function NewClassPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
@@ -209,9 +216,7 @@ export default function NewClassPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Instructor
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Instructor</label>
                 <input
                   type="text"
                   value={formData.instructor}
@@ -222,9 +227,7 @@ export default function NewClassPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Duration (minutes)
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
                 <input
                   type="number"
                   min={5}
@@ -238,26 +241,20 @@ export default function NewClassPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Difficulty
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Difficulty</label>
                 <select
                   value={formData.difficulty}
                   onChange={(e) => setFormData((prev) => ({ ...prev, difficulty: e.target.value as Difficulty }))}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
                   {DIFFICULTIES.map((d) => (
-                    <option key={d} value={d}>
-                      {d.charAt(0).toUpperCase() + d.slice(1)}
-                    </option>
+                    <option key={d} value={d}>{d.charAt(0).toUpperCase() + d.slice(1)}</option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Style
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Style</label>
                 <select
                   value={formData.style}
                   onChange={(e) => setFormData((prev) => ({ ...prev, style: e.target.value }))}
@@ -265,9 +262,7 @@ export default function NewClassPage() {
                 >
                   <option value="">Select a style</option>
                   {STYLES.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
+                    <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
               </div>
@@ -275,16 +270,35 @@ export default function NewClassPage() {
           </div>
         </div>
 
-        {/* Media */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Media</h2>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Video
-              </label>
-              {formData.video_url ? (
+              <label className="block text-sm font-medium text-gray-700 mb-1">Video</label>
+              {formData.mux_upload_id ? (
+                <div className="flex items-center gap-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <Video className="w-8 h-8 text-green-600" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-green-800">Video uploaded to Mux</p>
+                    <p className="text-xs text-green-600">
+                      {videoUploadProgress || "Processing... The video will be ready shortly after saving."}
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setFormData((prev) => ({ ...prev, mux_upload_id: "" }));
+                      setVideoUploadProgress(null);
+                    }}
+                  >
+                    <X className="w-4 h-4 mr-1" />
+                    Remove
+                  </Button>
+                </div>
+              ) : formData.video_url ? (
                 <div className="flex items-center gap-4">
                   <video
                     src={formData.video_url}
@@ -305,12 +319,15 @@ export default function NewClassPage() {
                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     {uploadingVideo ? (
-                      <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
+                      <>
+                        <Loader2 className="w-8 h-8 text-gray-400 animate-spin mb-2" />
+                        <p className="text-sm text-gray-500">{videoUploadProgress || "Uploading..."}</p>
+                      </>
                     ) : (
                       <>
                         <Upload className="w-8 h-8 text-gray-400 mb-2" />
                         <p className="text-sm text-gray-500">Click to upload video</p>
-                        <p className="text-xs text-gray-400">MP4, WebM up to 500MB</p>
+                        <p className="text-xs text-gray-400">MP4, WebM — no size limit via Mux</p>
                       </>
                     )}
                   </div>
@@ -326,9 +343,7 @@ export default function NewClassPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Thumbnail
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Thumbnail</label>
               {formData.thumbnail_url ? (
                 <div className="flex items-center gap-4">
                   <img
@@ -355,7 +370,7 @@ export default function NewClassPage() {
                       <>
                         <Upload className="w-8 h-8 text-gray-400 mb-2" />
                         <p className="text-sm text-gray-500">Click to upload thumbnail</p>
-                        <p className="text-xs text-gray-400">PNG, JPG up to 5MB</p>
+                        <p className="text-xs text-gray-400">PNG, JPG up to 5MB (optional — Mux auto-generates one)</p>
                       </>
                     )}
                   </div>
@@ -372,15 +387,12 @@ export default function NewClassPage() {
           </div>
         </div>
 
-        {/* Tags */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Tags</h2>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Focus Areas
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Focus Areas</label>
               <div className="flex flex-wrap gap-2">
                 {FOCUS_TAGS.map((tag) => (
                   <button
@@ -400,9 +412,7 @@ export default function NewClassPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Equipment Needed
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Equipment Needed</label>
               <div className="flex flex-wrap gap-2">
                 {EQUIPMENT_TAGS.map((tag) => (
                   <button
@@ -423,15 +433,12 @@ export default function NewClassPage() {
           </div>
         </div>
 
-        {/* Access & Pricing */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Access & Pricing</h2>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Access Type
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Access Type</label>
               <div className="flex gap-4">
                 {ACCESS_TYPES.map((type) => (
                   <label
@@ -463,9 +470,7 @@ export default function NewClassPage() {
             {formData.access_type === "one_time" && (
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Price (in cents)
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Price (in cents)</label>
                   <input
                     type="number"
                     min={99}
@@ -479,9 +484,7 @@ export default function NewClassPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Currency
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>
                   <select
                     value={formData.currency}
                     onChange={(e) => setFormData((prev) => ({ ...prev, currency: e.target.value }))}
@@ -497,7 +500,6 @@ export default function NewClassPage() {
           </div>
         </div>
 
-        {/* Publishing */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -516,12 +518,9 @@ export default function NewClassPage() {
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex items-center justify-end gap-4">
           <Link href="/admin/classes">
-            <Button type="button" variant="outline">
-              Cancel
-            </Button>
+            <Button type="button" variant="outline">Cancel</Button>
           </Link>
           <Button
             type="submit"
